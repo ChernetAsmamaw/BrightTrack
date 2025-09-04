@@ -44,7 +44,7 @@ A comprehensive teacher-facing mobile app for tracking student performance acros
 
 1. **Clone and Install**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ChernetAsmamaw/BrightTrack
    cd BrightTrack
    npm install
    ```
