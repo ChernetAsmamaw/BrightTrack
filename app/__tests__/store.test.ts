@@ -1,35 +1,34 @@
 import { useBrightTrackStore } from '../store';
 
-// Mock the mockData import
-jest.mock('../mockData', () => ({
-  mockClassProfile: {
-    strands: {
-      letterIdentification: {
-        workCoveredPct: 85,
-        students: [
-          { id: '1', name: 'Emma Johnson', mastery: 'EE', progressPct: 95 },
-          { id: '2', name: 'Liam Smith', mastery: 'ME', progressPct: 78 },
-        ],
-      },
-    },
-  },
-  mockStudents: [
-    {
-      id: '1',
-      name: 'Emma Johnson',
-      strands: {
-        letterIdentification: { mastery: 'EE', progressPct: 95 },
-      },
-    },
-    {
-      id: '2',
-      name: 'Liam Smith',
-      strands: {
-        letterIdentification: { mastery: 'ME', progressPct: 78 },
-      },
-    },
-  ],
+// Mock API responses
+jest.mock('expo-file-system', () => ({
+  documentDirectory: '/tmp/',
+  writeAsStringAsync: jest.fn(),
 }));
+
+jest.mock('expo-sharing', () => ({
+  shareAsync: jest.fn(),
+}));
+
+// Mock fetch for API calls
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({
+      strands: [
+        {
+          strandId: 'strand1',
+          strand: 'Letter Identification',
+          workCovered: 85,
+          students: [
+            { studentId: '1', name: 'John Doe', competence: 'EE' },
+            { studentId: '2', name: 'Jane Smith', competence: 'ME' },
+          ],
+        },
+      ],
+    }),
+  })
+) as jest.Mock;
 
 describe('BrightTrack Store Logic', () => {
   beforeEach(() => {

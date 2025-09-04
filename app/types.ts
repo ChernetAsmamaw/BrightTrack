@@ -24,19 +24,23 @@ export interface Student {
   avatarUrl?: string;
   strands: {
     [key in StrandKey]: {
-      mastery: MasteryLevel;
-      progressPct: number;
+      competence: MasteryLevel;
+      progress: number;
     };
   };
 }
 
 export interface ClassProfile {
   strands: {
-    [key in StrandKey]: {
-      workCoveredPct: number;
-      students: StudentSummary[];
-    };
-  };
+    strandId: string;
+    strand: string;
+    workCovered: number;
+    students: {
+      studentId: string;
+      name: string;
+      competence: MasteryLevel;
+    }[];
+  }[];
 }
 
 export interface FilterState {

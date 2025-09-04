@@ -12,9 +12,9 @@ export default function AnalyticsScreen() {
     const distribution = { BE: 0, AE: 0, ME: 0, EE: 0 };
     
     if (classProfile) {
-      Object.values(classProfile.strands).forEach(strand => {
+      classProfile.strands.forEach(strand => {
         strand.students.forEach(student => {
-          distribution[student.mastery]++;
+          distribution[student.competence]++;
         });
       });
     }
@@ -76,21 +76,21 @@ export default function AnalyticsScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Strand Performance</Text>
-            {classProfile && Object.entries(classProfile.strands).map(([strandKey, strand]) => (
-              <View key={strandKey} style={styles.strandCard}>
+            {classProfile && classProfile.strands.map((strand, index) => (
+              <View key={strand.strandId} style={styles.strandCard}>
                 <View style={styles.strandHeader}>
-                  <Text style={styles.strandName}>{strandKey.replace(/([A-Z])/g, ' $1').trim()}</Text>
-                  <Text style={styles.strandProgress}>{strand.workCoveredPct}%</Text>
+                  <Text style={styles.strandName}>{strand.strand}</Text>
+                  <Text style={styles.strandProgress}>{strand.workCovered}%</Text>
                 </View>
                 <View style={styles.strandBar}>
                   <View 
                     style={[
                       styles.strandBarFill, 
                       { 
-                        width: `${strand.workCoveredPct}%`,
-                        backgroundColor: strand.workCoveredPct >= 80 ? theme.colors.success : 
-                                       strand.workCoveredPct >= 60 ? theme.colors.info :
-                                       strand.workCoveredPct >= 40 ? theme.colors.warning : 
+                        width: `${strand.workCovered}%`,
+                        backgroundColor: strand.workCovered >= 80 ? theme.colors.success : 
+                                       strand.workCovered >= 60 ? theme.colors.info :
+                                       strand.workCovered >= 40 ? theme.colors.warning : 
                                        theme.colors.error
                       }
                     ]} 

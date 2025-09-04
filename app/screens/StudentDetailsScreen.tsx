@@ -3,12 +3,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { EmptyState } from '../components/EmptyState';
 import { LoadingState } from '../components/LoadingState';
@@ -22,7 +22,7 @@ import { StrandKey, Student } from '../types';
 export default function StudentDetailsScreen() {
   const router = useRouter();
   const { studentId } = useLocalSearchParams<{ studentId: string }>();
-  const { getStudentById, generateStudentExport } = useBrightTrackStore();
+  const { getStudentById, generateStudentExport, error } = useBrightTrackStore();
   
   const [student, setStudent] = useState<Student | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -42,7 +42,8 @@ export default function StudentDetailsScreen() {
     setIsExporting(true);
     try {
       await generateStudentExport(studentId);
-    } catch (error) {
+    } catch (exportError) {
+      console.error('Export failed:', exportError);
       Alert.alert('Export Failed', 'Unable to export student data. Please try again.');
     } finally {
       setIsExporting(false);
@@ -60,6 +61,33 @@ export default function StudentDetailsScreen() {
 
   if (isLoading) {
     return <LoadingState message="Loading student details..." />;
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            style={styles.backButton}
+            accessibilityLabel="Go back"
+          >
+            <MaterialCommunityIcons 
+              name="arrow-left" 
+              size={24} 
+              color={theme.colors.textPrimary} 
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Error</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <EmptyState 
+          type="noResults" 
+          title="Failed to load student"
+          message={error}
+        />
+      </View>
+    );
   }
 
   if (!student) {
@@ -162,23 +190,23 @@ export default function StudentDetailsScreen() {
                 
                 <View style={styles.competenceSection}>
                   <Text style={styles.competenceLabel}>Current Competence Level</Text>
-                  <MasteryChip mastery={strandData.mastery} size="large" />
+                  <MasteryChip mastery={strandData.competence} size="large" />
                 </View>
 
                 <View style={styles.progressSection}>
                   <View style={styles.progressHeader}>
                     <Text style={styles.progressLabel}>
-                      Work progress — {strandData.progressPct}%
+                      Work progress — {strandData.progress}%
                     </Text>
                     <MaterialCommunityIcons 
                       name="chart-line" 
                       size={16} 
-                      color={theme.colors.mastery[strandData.mastery]} 
+                      color={theme.colors.mastery[strandData.competence]} 
                     />
                   </View>
                   <ProgressBar 
-                    value={strandData.progressPct} 
-                    color={theme.colors.mastery[strandData.mastery]}
+                    value={strandData.progress} 
+                    color={theme.colors.mastery[strandData.competence]}
                     height={12}
                   />
                 </View>

@@ -32,7 +32,7 @@ export default function StudentsScreen() {
 
   useEffect(() => {
     fetchStudents();
-  }, []);
+  }, [fetchStudents]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -112,7 +112,12 @@ export default function StudentsScreen() {
               {filteredStudents.map((student) => (
                 <StudentRow
                   key={student.id}
-                  student={student}
+                  student={{
+                    id: student.id,
+                    name: student.name,
+                    mastery: student.strands.letterIdentification.competence,
+                    progressPct: student.strands.letterIdentification.progress,
+                  }}
                   onPress={handleStudentPress}
                 />
               ))}

@@ -2,12 +2,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { EmptyState } from '../components/EmptyState';
 import { FilterChips } from '../components/FilterChips';
@@ -42,7 +42,7 @@ export default function ClassOverviewScreen() {
   useEffect(() => {
     fetchClassProfile();
     fetchStudents();
-  }, []);
+  }, [fetchClassProfile, fetchStudents]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -131,18 +131,10 @@ export default function ClassOverviewScreen() {
               
               if (!filteredData) return null;
 
-              const strand: any = {
-                key: strandKey as StrandKey,
-                name: strandInfo.name,
-                description: strandInfo.description,
-                workCoveredPct: filteredData.workCoveredPct,
-                students: filteredData.students,
-              };
-
               return (
                 <StrandCard
                   key={strandKey}
-                  strand={strand}
+                  strand={filteredData}
                   onStudentPress={handleStudentPress}
                 />
               );

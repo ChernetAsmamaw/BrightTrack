@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { theme } from '../theme';
 
 interface ProgressBarProps {
   value: number;
   color?: string;
   height?: number;
-  width?: number | string;
+  width?: number | string | undefined;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -16,10 +16,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   width = '100%',
 }) => {
   const clampedValue = Math.max(0, Math.min(100, value));
-  const progressWidth = `${clampedValue}%`;
+  const progressWidth = `${clampedValue}%` as const;
 
   return (
-    <View style={[styles.container, { height, width }]}>
+    <View style={[styles.container, { height, width: width as any }]}>
       <View style={[styles.progress, { width: progressWidth, backgroundColor: color }]} />
     </View>
   );

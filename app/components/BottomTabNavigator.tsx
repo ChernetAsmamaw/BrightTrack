@@ -44,7 +44,7 @@ export const BottomTabNavigator: React.FC = () => {
 
   const handleTabPress = (route: string) => {
     if (route !== pathname) {
-      router.push(route);
+      router.push(route as any);
     }
   };
 

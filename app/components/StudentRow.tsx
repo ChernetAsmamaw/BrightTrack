@@ -45,7 +45,7 @@ export const StudentRow: React.FC<StudentRowProps> = ({ student, onPress }) => {
             color={theme.colors.textTertiary} 
           />
           <Text style={styles.progressText}>
-            {student.progressPct}% progress
+            {student.progressPct > 0 ? `${student.progressPct}% progress` : 'Progress not available'}
           </Text>
         </View>
       </View>

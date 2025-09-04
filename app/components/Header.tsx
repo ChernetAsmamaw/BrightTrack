@@ -2,12 +2,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useRef, useState } from 'react';
-import { Animated, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { images } from '../assets';
 import { theme } from '../theme';
 import { MasteryChip } from './MasteryChip';
 
-const { width } = Dimensions.get('window');
+// const { width } = Dimensions.get('window'); // Unused variable removed
 
 const MASTERY_DESCRIPTIONS = {
   BE: { name: 'Below Expectation', description: 'Needs significant support and guidance' },

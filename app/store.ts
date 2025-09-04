@@ -1,8 +1,19 @@
-import { create } from 'zustand';
-import { ClassProfile, Student, StrandKey, MasteryLevel, FilterState, ExportData } from './types';
-import { API_BASE_URL } from './constants';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { create } from 'zustand';
+import { API_BASE_URL } from './constants';
+import { ClassProfile, ExportData, MasteryLevel, StrandKey, Student } from './types';
+
+// Helper function to get strand description
+const getStrandDescription = (strandKey: StrandKey): string => {
+  const descriptions = {
+    letterIdentification: 'Recognizing and identifying letters',
+    letterNaming: 'Correctly naming letters when shown',
+    letterFormation: 'Proper handwriting and letter construction',
+    phonemicAwareness: 'Understanding letter sounds and phonics',
+  };
+  return descriptions[strandKey];
+};
 
 interface BrightTrackStore {
   // State
@@ -45,19 +56,20 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
   fetchClassProfile: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Use mock data for development
-      const { mockClassProfile } = await import('./mockData');
+      const response = await fetch(`${API_BASE_URL}/class_profile`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
       set({ 
-        classProfile: mockClassProfile, 
+        classProfile: data, 
         isLoading: false, 
         lastUpdated: Date.now() 
       });
     } catch (error) {
+      console.error('Error fetching class profile:', error);
       set({ 
-        error: error instanceof Error ? error.message : 'Unknown error', 
+        error: error instanceof Error ? error.message : 'Failed to fetch class profile', 
         isLoading: false 
       });
     }
@@ -65,15 +77,16 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
 
   fetchStudents: async () => {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Use mock data for development
-      const { mockStudents } = await import('./mockData');
-      set({ students: mockStudents });
+      const response = await fetch(`${API_BASE_URL}/students`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      set({ students: data });
     } catch (error) {
+      console.error('Error fetching students:', error);
       set({ 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: error instanceof Error ? error.message : 'Failed to fetch students' 
       });
     }
   },
@@ -116,8 +129,8 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
       exportData.push({
         studentName: student.name,
         strand: strandNames[strandKey as keyof typeof strandNames],
-        mastery: data.mastery,
-        workProgress: data.progressPct,
+        mastery: data.competence,
+        workProgress: data.progress,
         exportedAt: new Date().toISOString(),
       });
     });
@@ -163,7 +176,7 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
       }
 
       // Apply mastery filter
-      if (selectedMasteries.length > 0 && !selectedMasteries.includes(student.strands[strandKey].mastery)) {
+      if (selectedMasteries.length > 0 && !selectedMasteries.includes(student.strands[strandKey].competence)) {
         return false;
       }
 
@@ -176,13 +189,23 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
     
     if (!classProfile) return null;
 
+    // Find the strand by mapping the key to the strand name
+    const strandMapping = {
+      letterIdentification: 'Letter Identification',
+      letterNaming: 'Letter Naming',
+      letterFormation: 'Letter Formation',
+      phonemicAwareness: 'Phonemic Awareness',
+    };
+
+    const strandName = strandMapping[strandKey];
+    const strandData = classProfile.strands.find(s => s.strand === strandName);
+    
+    if (!strandData) return null;
+
     // If specific strands are selected, only show those strands
     if (selectedStrands.length > 0 && !selectedStrands.includes(strandKey)) {
       return null;
     }
-
-    const strandData = classProfile.strands[strandKey];
-    if (!strandData) return null;
 
     let filteredStudents = strandData.students;
 
@@ -196,13 +219,27 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
     // Apply mastery filter
     if (selectedMasteries.length > 0) {
       filteredStudents = filteredStudents.filter(student =>
-        selectedMasteries.includes(student.mastery)
+        selectedMasteries.includes(student.competence)
       );
     }
 
     return {
-      ...strandData,
-      students: filteredStudents,
+      key: strandKey,
+      name: strandData.strand,
+      description: getStrandDescription(strandKey),
+      workCoveredPct: strandData.workCovered,
+      students: filteredStudents.map(student => {
+        // Try to get progress from students data
+        const studentData = get().students.find(s => s.id === student.studentId);
+        const progress = studentData?.strands[strandKey]?.progress || 0;
+        
+        return {
+          id: student.studentId,
+          name: student.name,
+          mastery: student.competence,
+          progressPct: progress,
+        };
+      }),
     };
   },
 }));
