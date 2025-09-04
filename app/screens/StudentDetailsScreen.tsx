@@ -1,5 +1,4 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,8 +10,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { images } from '../assets';
 import { EmptyState } from '../components/EmptyState';
+import { LoadingState } from '../components/LoadingState';
 import { MasteryChip } from '../components/MasteryChip';
 import { ProgressBar } from '../components/ProgressBar';
 import { STRANDS } from '../constants';
@@ -27,11 +26,13 @@ export default function StudentDetailsScreen() {
   
   const [student, setStudent] = useState<Student | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (studentId) {
       const foundStudent = getStudentById(studentId);
       setStudent(foundStudent || null);
+      setIsLoading(false);
     }
   }, [studentId, getStudentById]);
 
@@ -56,6 +57,10 @@ export default function StudentDetailsScreen() {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  if (isLoading) {
+    return <LoadingState message="Loading student details..." />;
+  }
 
   if (!student) {
     return (
@@ -107,18 +112,9 @@ export default function StudentDetailsScreen() {
           
           <View style={styles.headerContent}>
             <View style={styles.avatarContainer}>
-              {student.avatarUrl ? (
-                <Image
-                  source={{ uri: student.avatarUrl }}
-                  style={styles.avatar}
-                  placeholder={images.avatar}
-                  accessibilityLabel={`Student avatar for ${student.name}`}
-                />
-              ) : (
-                <View style={styles.avatarPlaceholder}>
-                  <Text style={styles.initials}>{getInitials(student.name)}</Text>
-                </View>
-              )}
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.initials}>{getInitials(student.name)}</Text>
+              </View>
             </View>
             <Text style={styles.studentName}>{student.name}</Text>
           </View>
@@ -228,13 +224,6 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginBottom: theme.spacing.sm,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   avatarPlaceholder: {
     width: 80,

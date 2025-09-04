@@ -41,53 +41,75 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
         <View style={styles.chipContainer}>
           <Text style={styles.sectionTitle}>Strands</Text>
           <View style={styles.chipsRow}>
-            {Object.entries(STRANDS).map(([key, strand]) => (
-              <TouchableOpacity
-                key={key}
-                style={[
-                  styles.chip,
-                  selectedStrands.includes(key as StrandKey) && styles.chipSelected,
-                ]}
-                onPress={() => onStrandToggle(key as StrandKey)}
-                accessibilityLabel={`Filter by ${strand.name}`}
-                accessibilityHint={`${selectedStrands.includes(key as StrandKey) ? 'Remove' : 'Add'} ${strand.name} filter`}
-              >
-                <Text style={[
-                  styles.chipText,
-                  selectedStrands.includes(key as StrandKey) && styles.chipTextSelected,
-                ]}>
-                  {strand.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {Object.entries(STRANDS).map(([key, strand]) => {
+              const isSelected = selectedStrands.includes(key as StrandKey);
+              return (
+                <TouchableOpacity
+                  key={key}
+                  style={[
+                    styles.chip,
+                    isSelected && styles.chipSelected,
+                  ]}
+                  onPress={() => onStrandToggle(key as StrandKey)}
+                  accessibilityLabel={`Filter by ${strand.name}`}
+                  accessibilityHint={`${isSelected ? 'Remove' : 'Add'} ${strand.name} filter`}
+                >
+                  {isSelected && (
+                    <MaterialCommunityIcons 
+                      name="check" 
+                      size={16} 
+                      color="#FFFFFF" 
+                      style={styles.checkIcon}
+                    />
+                  )}
+                  <Text style={[
+                    styles.chipText,
+                    isSelected && styles.chipTextSelected,
+                  ]}>
+                    {strand.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
         <View style={styles.chipContainer}>
           <Text style={styles.sectionTitle}>Mastery</Text>
           <View style={styles.chipsRow}>
-            {MASTERY_LEVELS.map((mastery) => (
-              <TouchableOpacity
-                key={mastery}
-                style={[
-                  styles.chip,
-                  styles.masteryChip,
-                  { backgroundColor: theme.colors.mastery[mastery] },
-                  selectedMasteries.includes(mastery) && styles.masteryChipSelected,
-                ]}
-                onPress={() => onMasteryToggle(mastery)}
-                accessibilityLabel={`Filter by ${mastery} mastery`}
-                accessibilityHint={`${selectedMasteries.includes(mastery) ? 'Remove' : 'Add'} ${mastery} filter`}
-              >
-                <Text style={[
-                  styles.chipText,
-                  styles.masteryChipText,
-                  selectedMasteries.includes(mastery) && styles.masteryChipTextSelected,
-                ]}>
-                  {mastery}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {MASTERY_LEVELS.map((mastery) => {
+              const isSelected = selectedMasteries.includes(mastery);
+              return (
+                <TouchableOpacity
+                  key={mastery}
+                  style={[
+                    styles.chip,
+                    styles.masteryChip,
+                    { backgroundColor: theme.colors.mastery[mastery] },
+                    isSelected && styles.masteryChipSelected,
+                  ]}
+                  onPress={() => onMasteryToggle(mastery)}
+                  accessibilityLabel={`Filter by ${mastery} mastery`}
+                  accessibilityHint={`${isSelected ? 'Remove' : 'Add'} ${mastery} filter`}
+                >
+                  {isSelected && (
+                    <MaterialCommunityIcons 
+                      name="check" 
+                      size={16} 
+                      color="#FFFFFF" 
+                      style={styles.checkIcon}
+                    />
+                  )}
+                  <Text style={[
+                    styles.chipText,
+                    styles.masteryChipText,
+                    isSelected && styles.masteryChipTextSelected,
+                  ]}>
+                    {mastery}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
       </ScrollView>
@@ -143,6 +165,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.cardSurface,
     minHeight: 44,
     justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   chipSelected: {
     backgroundColor: theme.colors.primary,
@@ -155,6 +179,7 @@ const styles = StyleSheet.create({
   },
   chipTextSelected: {
     color: '#FFFFFF',
+    fontWeight: '600',
   },
   masteryChip: {
     borderColor: 'transparent',
@@ -169,5 +194,9 @@ const styles = StyleSheet.create({
   },
   masteryChipTextSelected: {
     color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  checkIcon: {
+    marginRight: theme.spacing.xs,
   },
 });

@@ -30,7 +30,8 @@ export default function AnalyticsScreen() {
       <Header 
         title="Analytics" 
         subtitle="Performance Insights"
-        showTeacherImage={false}
+        showTeacherImage={true}
+        showMasteryLegend={true}
       />
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

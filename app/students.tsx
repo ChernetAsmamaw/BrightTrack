@@ -66,7 +66,7 @@ export default function StudentsScreen() {
   }
 
   if (isLoading && students.length === 0) {
-    return <LoadingState />;
+    return <LoadingState message="Loading students..." />;
   }
 
   return (
@@ -74,7 +74,8 @@ export default function StudentsScreen() {
       <Header 
         title="Students" 
         subtitle="All Students Overview"
-        showTeacherImage={false}
+        showTeacherImage={true}
+        showMasteryLegend={true}
       />
       
       <ScrollView

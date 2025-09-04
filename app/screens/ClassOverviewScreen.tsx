@@ -13,7 +13,6 @@ import { EmptyState } from '../components/EmptyState';
 import { FilterChips } from '../components/FilterChips';
 import { Header } from '../components/Header';
 import { LoadingState } from '../components/LoadingState';
-import { MasteryLegend } from '../components/MasteryLegend';
 import { SearchBar } from '../components/SearchBar';
 import { StrandCard } from '../components/StrandCard';
 import { STRANDS } from '../constants';
@@ -90,7 +89,7 @@ export default function ClassOverviewScreen() {
   }
 
   if (isLoading && !classProfile) {
-    return <LoadingState />;
+    return <LoadingState message="Loading class data..." />;
   }
 
   return (
@@ -99,6 +98,7 @@ export default function ClassOverviewScreen() {
         title="BrightTrack" 
         subtitle="Student Performance Dashboard"
         showTeacherImage={true}
+        showMasteryLegend={true}
       />
       
       <ScrollView
@@ -116,8 +116,6 @@ export default function ClassOverviewScreen() {
               placeholder="Search students..."
             />
           </View>
-
-          <MasteryLegend />
 
           <FilterChips
             selectedStrands={selectedStrands}

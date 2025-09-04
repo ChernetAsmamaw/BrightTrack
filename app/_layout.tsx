@@ -1,8 +1,9 @@
 import * as Font from 'expo-font';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { BottomTabNavigator } from './components/BottomTabNavigator';
+import { LoadingState } from './components/LoadingState';
 import { theme } from './theme';
 
 export default function Layout() {
@@ -28,11 +29,7 @@ export default function Layout() {
   }, []);
 
   if (!fontsLoaded) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
-        <Text style={{ color: theme.colors.textPrimary }}>Loading...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading fonts..." />;
   }
 
   return (

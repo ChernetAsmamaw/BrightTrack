@@ -1,8 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { images } from '../assets';
 import { theme } from '../theme';
 import { StudentSummary } from '../types';
 import { MasteryChip } from './MasteryChip';
@@ -31,18 +29,9 @@ export const StudentRow: React.FC<StudentRowProps> = ({ student, onPress }) => {
       activeOpacity={0.7}
     >
       <View style={styles.avatarContainer}>
-        {student.avatarUrl ? (
-          <Image
-            source={{ uri: student.avatarUrl }}
-            style={styles.avatar}
-            placeholder={images.avatar}
-            accessibilityLabel={`Student avatar for ${student.name}`}
-          />
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.initials}>{getInitials(student.name)}</Text>
-          </View>
-        )}
+        <View style={styles.avatarPlaceholder}>
+          <Text style={styles.initials}>{getInitials(student.name)}</Text>
+        </View>
       </View>
       
       <View style={styles.content}>
@@ -90,11 +79,6 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginRight: theme.spacing.md,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
   },
   avatarPlaceholder: {
     width: 48,

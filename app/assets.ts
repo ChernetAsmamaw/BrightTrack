@@ -1,7 +1,7 @@
 export const images = {
-  avatar: require('../assets/images/avator-placeholder.jpg'),
-  emptyState: require('../assets/images/empty-state.webp'),
-  noStudent: require('../assets/images/no-student-found.webp'),
+  avatar: null, // Will use initials instead of image
+  emptyState: require('../assets/images/student.webp'),
+  noStudent: require('../assets/images/student.webp'),
   teacher: require('../assets/images/teacher.webp'),
 } as const;
 

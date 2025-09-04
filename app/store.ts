@@ -176,6 +176,11 @@ export const useBrightTrackStore = create<BrightTrackStore>((set, get) => ({
     
     if (!classProfile) return null;
 
+    // If specific strands are selected, only show those strands
+    if (selectedStrands.length > 0 && !selectedStrands.includes(strandKey)) {
+      return null;
+    }
+
     const strandData = classProfile.strands[strandKey];
     if (!strandData) return null;
 
